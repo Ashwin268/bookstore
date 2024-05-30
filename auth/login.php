@@ -1,0 +1,60 @@
+<?php require "../includes/header.php" ?>
+<?php require "../config/config.php" ?>
+<?php 
+
+    if(isset($_POST["submit"])) {
+        if(empty($_POST["email"]) or empty($_POST["password"])) {
+            echo "<script>alert('one or more input are empty');</script>";
+        }
+        else {
+            $email = $_POST["email"];
+            $password = $_POST["password"];
+            $login = $conn->prepare("SELECT * FROM users WHERE email=:email");
+            $login->execute([
+                ":email"=> $email
+            ]);
+            // or $login = $conn->query("SELECT * FROM users WHERE email='$email'");
+            // $login->execute();
+            if($login->rowCount() > 0) {
+            $fetch = $login->fetch(PDO::FETCH_ASSOC);
+                if(password_verify($password, $fetch["mypassword"])) {
+                    echo "Logged in";
+                }
+                else {
+                    echo "<script>alert('email or password are wrong');</script>";
+                }
+
+            }
+            else {
+                echo "<script>alert('you don\'t have an account pls register');</script>";
+            }
+        }
+    }
+?>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form class="form-control mt-5" method="POST" action="login.php">
+                    <h4 class="text-center mt-3"> Login </h4>
+                   
+                    <div class="">
+                        <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+                        <div class="">
+                            <input name="email" type="email"  class="form-control">
+                        </div>
+                    </div>
+                    <div class="">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+                        <div class="">
+                            <input name="password" type="password" class="form-control" id="inputPassword">
+                        </div>
+                    </div>
+                    <button name="submit" class="w-100 btn btn-lg btn-primary mt-4" type="submit">login</button>
+
+                </form>
+            </div>
+        </div>
+ 
+   
+
+        <?php require "../includes/footer.php" ?>
