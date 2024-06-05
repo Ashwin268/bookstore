@@ -18,9 +18,11 @@
             if($login->rowCount() > 0) {
             $fetch = $login->fetch(PDO::FETCH_ASSOC);
                 if(password_verify($password, $fetch["mypassword"])) {
-                    echo "Logged in";
+                    $_SESSION["username"] = $fetch["username"];
+                    $_SESSION["user_id"] = $fetch["id"];
+                    header("location: ".APPURL."");
                 }
-                else {
+                else {  
                     echo "<script>alert('email or password are wrong');</script>";
                 }
 
